@@ -1,3 +1,10 @@
+---
+title: Tool System
+layout: default
+nav_order: 4
+parent: Agentic Design
+---
+
 # Tool 系统：Agent 影响世界的手段
 
 ## 为什么需要 Tool?

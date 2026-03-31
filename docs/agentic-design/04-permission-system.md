@@ -1,3 +1,10 @@
+---
+title: Permission System
+layout: default
+nav_order: 6
+parent: Agentic Design
+---
+
 # Permission 系统：Agent 的沙箱
 
 ## 为什么需要权限管控?

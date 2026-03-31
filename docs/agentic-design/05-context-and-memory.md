@@ -1,3 +1,10 @@
+---
+title: Context & Memory
+layout: default
+nav_order: 7
+parent: Agentic Design
+---
+
 # Context 和 Memory：有限的脑容量
 
 ## 为什么这很重要？

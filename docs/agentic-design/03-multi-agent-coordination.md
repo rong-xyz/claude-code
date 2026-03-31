@@ -1,3 +1,10 @@
+---
+title: Multi-Agent Coordination
+layout: default
+nav_order: 5
+parent: Agentic Design
+---
+
 # 多 Agent 协调：并行与分解
 
 ## 为什么需要多个 Agent?

@@ -1,3 +1,10 @@
+---
+title: Codebase Tour
+layout: default
+nav_order: 2
+parent: Agentic Design
+---
+
 # 代码库全景：从顶层到最深处
 
 > 这篇文档是一个**递归的导游**。我们从顶层文件开始，逐层深入每个重要的目录，直到粒度太细而没有学习价值为止。每个章节都注明关键文件，你可以随时打开源代码对照。
