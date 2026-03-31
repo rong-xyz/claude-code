@@ -10,9 +10,6 @@ url: "https://rong-xyz.github.io"
 baseurl: "/claude-code"
 repository: "rong-xyz/claude-code"
 
-# Theme configuration
-theme: just-the-docs
-
 # Just-the-Docs settings
 color_scheme: light
 search_enabled: true
@@ -39,7 +36,9 @@ callouts:
 footer_content: "Copyright &copy; 2024 Anthropic. All rights reserved."
 
 # Build settings
+remote_theme: just-the-docs/just-the-docs
 plugins:
+  - jekyll-remote-theme
   - jekyll-seo-tag
   - jekyll-github-metadata
 
