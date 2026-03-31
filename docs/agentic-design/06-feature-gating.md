@@ -1,3 +1,10 @@
+---
+title: Feature Gating
+layout: default
+nav_order: 8
+parent: Agentic Design
+---
+
 # Feature Gating：内部功能和公开功能的隔离
 
 ## 为什么需要 Feature Gating?

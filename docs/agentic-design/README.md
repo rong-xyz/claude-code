@@ -1,3 +1,11 @@
+---
+title: Agentic Design Overview
+layout: default
+nav_order: 1
+parent: Agentic Design
+has_children: true
+---
+
 # Claude Code Agentic 设计文档
 
 > **目标读者**：有一定软件工程背景、希望通过真实项目理解 agentic 系统设计的学习者。

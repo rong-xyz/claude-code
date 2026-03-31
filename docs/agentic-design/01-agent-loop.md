@@ -1,3 +1,10 @@
+---
+title: Agent Loop
+layout: default
+nav_order: 3
+parent: Agentic Design
+---
+
 # 核心 Query Loop：Agent 的心脏
 
 ## 为什么需要 Loop?

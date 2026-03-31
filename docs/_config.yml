@@ -1,0 +1,58 @@
+# Jekyll configuration for GitHub Pages
+
+# Site settings
+title: Claude Code Documentation
+description: Learn about Claude Code architecture and agentic design patterns
+author: Anthropic
+
+# GitHub Pages settings
+url: "https://rong-xyz.github.io"
+baseurl: "/claude-code"
+repository: "rong-xyz/claude-code"
+
+# Theme configuration
+theme: just-the-docs
+
+# Just-the-Docs settings
+color_scheme: light
+search_enabled: true
+search.button: true
+
+# Navigation settings
+aux_links:
+  "GitHub": https://github.com/rong-xyz/claude-code
+  "Issues": https://github.com/rong-xyz/claude-code/issues
+
+# Callouts configuration
+callouts:
+  note:
+    title: Note
+    color: blue
+  warning:
+    title: Warning
+    color: yellow
+  info:
+    title: Info
+    color: green
+
+# Footer settings
+footer_content: "Copyright &copy; 2024 Anthropic. All rights reserved."
+
+# Build settings
+plugins:
+  - jekyll-seo-tag
+  - jekyll-github-metadata
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+exclude:
+  - .gitignore
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - node_modules
+  - .git
+  - .github
