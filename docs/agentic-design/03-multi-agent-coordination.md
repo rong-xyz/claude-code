@@ -2,7 +2,7 @@
 title: Multi-Agent Coordination
 layout: default
 nav_order: 5
-parent: Agentic Design
+parent: Agentic Design Overview
 ---
 
 # 多 Agent 协调：并行与分解

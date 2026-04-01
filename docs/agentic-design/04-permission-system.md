@@ -2,7 +2,7 @@
 title: Permission System
 layout: default
 nav_order: 6
-parent: Agentic Design
+parent: Agentic Design Overview
 ---
 
 # Permission 系统：Agent 的沙箱

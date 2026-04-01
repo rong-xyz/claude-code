@@ -2,7 +2,7 @@
 title: Agent Loop
 layout: default
 nav_order: 3
-parent: Agentic Design
+parent: Agentic Design Overview
 ---
 
 # 核心 Query Loop：Agent 的心脏

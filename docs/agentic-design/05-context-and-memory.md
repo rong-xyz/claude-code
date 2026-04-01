@@ -2,7 +2,7 @@
 title: Context & Memory
 layout: default
 nav_order: 7
-parent: Agentic Design
+parent: Agentic Design Overview
 ---
 
 # Context 和 Memory：有限的脑容量

@@ -2,7 +2,7 @@
 title: Feature Gating
 layout: default
 nav_order: 8
-parent: Agentic Design
+parent: Agentic Design Overview
 ---
 
 # Feature Gating：内部功能和公开功能的隔离

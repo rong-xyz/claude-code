@@ -2,7 +2,7 @@
 title: Codebase Tour
 layout: default
 nav_order: 2
-parent: Agentic Design
+parent: Agentic Design Overview
 ---
 
 # 代码库全景：从顶层到最深处

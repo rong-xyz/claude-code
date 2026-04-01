@@ -2,7 +2,7 @@
 title: Tool System
 layout: default
 nav_order: 4
-parent: Agentic Design
+parent: Agentic Design Overview
 ---
 
 # Tool 系统：Agent 影响世界的手段
