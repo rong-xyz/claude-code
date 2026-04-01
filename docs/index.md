@@ -4,30 +4,30 @@ layout: home
 nav_order: 1
 ---
 
-# Welcome to Claude Code Documentation
+# Claude Code 文档
 
-Claude Code is Anthropic's official CLI for Claude, enabling powerful software engineering tasks through an interactive agent interface.
+欢迎来到 Claude Code 的官方文档。Claude Code 是 Anthropic 的官方 AI 编程 CLI 工具，通过交互式 agent 接口实现强大的软件工程任务。
 
-## Learning Resources
+## 学习资源
 
-This documentation provides in-depth guides to understanding Claude Code's architecture and design patterns:
+本文档提供深入的指南，帮助理解 Claude Code 的架构和 agentic 系统设计原理。
 
-### [Agentic Design Guide]({{ site.baseurl }}/agentic-design/)
+### [Agentic Design 学习路径]({{ site.baseurl }}/agentic-design/)
 
-A comprehensive learning path covering how Claude Code implements agentic systems:
+一份全面的学习资料，涵盖 Claude Code 最核心的设计决策：
 
-- **[00: Codebase Tour]({{ site.baseurl }}/agentic-design/00-codebase-tour)** — Navigate the repository structure and understand the key components
-- **[01: Agent Loop]({{ site.baseurl }}/agentic-design/01-agent-loop)** — Learn how agents execute and iterate
-- **[02: Tool System]({{ site.baseurl }}/agentic-design/02-tool-system)** — Understand how tools are registered, discovered, and executed
-- **[03: Multi-Agent Coordination]({{ site.baseurl }}/agentic-design/03-multi-agent-coordination)** — See how multiple agents communicate and coordinate
-- **[04: Permission System]({{ site.baseurl }}/agentic-design/04-permission-system)** — Explore permission checks and capability management
-- **[05: Context & Memory]({{ site.baseurl }}/agentic-design/05-context-and-memory)** — Dive into context management and memory handling
-- **[06: Feature Gating]({{ site.baseurl }}/agentic-design/06-feature-gating)** — Understand internal feature flags and gating mechanisms
+- **[00: 代码库全景]({{ site.baseurl }}/agentic-design/00-codebase-tour)** — 代码库结构导游，从顶层到最深处
+- **[01: Agent Loop]({{ site.baseurl }}/agentic-design/01-agent-loop)** — 核心 Query Loop，`while(tool_use)` 的艺术
+- **[02: Tool 系统]({{ site.baseurl }}/agentic-design/02-tool-system)** — 40+ 工具的统一接口设计
+- **[03: 多 Agent 协调]({{ site.baseurl }}/agentic-design/03-multi-agent-coordination)** — 分解复杂任务，四种 agent 类型
+- **[04: Permission 系统]({{ site.baseurl }}/agentic-design/04-permission-system)** — 五层防线的安全沙箱
+- **[05: Context & Memory]({{ site.baseurl }}/agentic-design/05-context-and-memory)** — 上下文窗口和记忆管理
+- **[06: Feature Gating]({{ site.baseurl }}/agentic-design/06-feature-gating)** — 内部功能的编译期/运行期隔离
 
-## Getting Started
+## 快速开始
 
-Start with the [Agentic Design README]({{ site.baseurl }}/agentic-design/) for an overview and recommended reading order.
+从 [Agentic Design 学习路径]({{ site.baseurl }}/agentic-design/) 开始，获得完整的学习概览和推荐阅读顺序。
 
 ---
 
-**Latest Updates:** Check the [GitHub repository](https://github.com/rong-xyz/claude-code) for the latest version and updates.
+**最新更新**（2026 年 4 月）：基于 Claude Code 源码泄露分析，所有文档已大幅扩充。详见 [GitHub 仓库](https://github.com/rong-xyz/claude-code)。
