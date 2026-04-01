@@ -179,3 +179,7 @@ API 调用失败
 - `utils/permissions/denialTracking.ts` — 权限拒绝熔断实现
 - `query/tokenBudget.ts` — Token 预算和分层降级逻辑
 - `services/api/` — API 重试策略
+
+---
+
+**下一步** → [Recovery Strategies](recovery-strategies.md)

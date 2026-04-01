@@ -281,3 +281,7 @@ Session 恢复时：
 - `tasks/LocalMainSessionTask.ts` — 本地 session 任务跟踪
 - `commands/session.ts` — session 命令实现（/session list 等）
 - `memdir/memdir.ts` — 与 MEMORY.md 的集成
+
+---
+
+**下一步** → [Bridge & Remote](../bridge-remote/)

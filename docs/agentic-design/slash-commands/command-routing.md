@@ -305,6 +305,17 @@ Agent："我知道 /review-pr 的流程，直接执行..."
 
 ## 深入阅读
 
+### 相关文档
+
+- [Tool System](../tool-system/) — 命令通过工具执行
+- [Agent Loop](../agent-loop/) — 命令创建临时 agent 进入 loop
+
+### 源代码
+
 - `commands.ts` — 中央路由器（~25K 行）
 - `commands/` — 所有命令的实现
 - `cli/handlers/` — 输出处理程序
+
+---
+
+**下一步** → [Skill Commands](skill-commands.md)

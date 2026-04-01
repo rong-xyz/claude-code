@@ -136,5 +136,11 @@ Tier 4（还有 < 5% token）→ 停止工作，返回错误
 
 ## 深入阅读
 
+### 相关文档
+
+- [Agent Loop Token Budget](../agent-loop/token-budget.md) — Agent Loop 侧的 token budget 视角
+
+### 源代码
+
 - `query/tokenBudget.ts`：Token 追踪逻辑
 - `services/compact/`：Compaction 服务实现

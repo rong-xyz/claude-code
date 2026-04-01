@@ -108,6 +108,13 @@ Tool 执行时会 emit 类型化的进度数据，实时显示在终端：
 
 ## 深入阅读
 
+### 相关文档
+
+- [Agent Loop](../agent-loop/) — 工具如何嵌入循环
+- [Permission System](../permission-system/) — 每次执行前的权限检查
+
+### 源代码
+
 - `Tool.ts`：Tool interface 定义
 - `services/tools/StreamingToolExecutor.ts`：并发执行编排
 - `utils/permissions/permissions.ts`：权限检查

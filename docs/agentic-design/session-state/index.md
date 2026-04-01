@@ -112,3 +112,7 @@ session 历史 + MEMORY.md 提供完整上下文
 
 - **[Bootstrap & Cold Start](bootstrap.md)** — 启动时发生了什么
 - **[Session Persistence](persistence.md)** — Session 如何保存和恢复
+
+---
+
+**下一步** → [Bootstrap](bootstrap.md)

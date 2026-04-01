@@ -239,3 +239,7 @@ agent 看到：部分成功，部分失败，某些被中止
 - `utils/abortController.ts` — Abort signal 的封装和管理
 - `services/tools/StreamingToolExecutor.ts` — 并发工具执行中的 sibling abort 实现
 - `query.ts` — Query loop 中的 abort 检查点
+
+---
+
+**下一步** → [Circuit Breakers](circuit-breakers.md)

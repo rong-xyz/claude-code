@@ -260,6 +260,13 @@ chicago_beta               # 计算机使用 beta
 
 ## 深入阅读
 
+### 相关文档
+
+- [Bootstrap & Cold Start](../session-state/bootstrap.md) — GrowthBook 在 bootstrap 时初始化
+- [Token Compression](../context-memory/compression.md) — HISTORY_SNIP 功能标志控制压缩行为
+
+### 源代码
+
 - `bootstrap/state.ts`：运行时 flag 初始化（56 KB）
 - `constants/betas.ts`：Beta feature 列表
 - `entrypoints/cli.tsx`：编译期条件编译示例

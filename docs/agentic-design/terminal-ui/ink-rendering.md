@@ -254,3 +254,7 @@ Tool 直接 return result as string
 - `cli/structuredIO.ts` — NDJSON 编码和解码
 - `cli/handlers/` — 不同命令的输出 handler
 - `cli/transports/` — 多种输出后端
+
+---
+
+**下一步** → [State → UI Pipeline](state-to-ui.md)

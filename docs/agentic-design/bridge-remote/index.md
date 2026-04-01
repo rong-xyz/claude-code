@@ -115,3 +115,7 @@ server 验证签名和过期时间
 
 - **[Bridge Protocol](bridge-protocol.md)** — JWT 握手和消息协议
 - **[Multi-Client Architecture](multi-client.md)** — 多客户端的并发和同步
+
+---
+
+**下一步** → [Bridge Protocol](bridge-protocol.md)

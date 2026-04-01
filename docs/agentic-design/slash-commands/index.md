@@ -185,3 +185,7 @@ switch (userInput) {
 
 - **[Command Routing](command-routing.md)** — 如何路由和执行命令
 - **[Skill Commands](skill-commands.md)** — 用户定义的技能
+
+---
+
+**下一步** → [Command Routing](command-routing.md)

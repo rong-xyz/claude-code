@@ -48,5 +48,11 @@ Anthropic 工程师确认的工程原则：**"Cache Rules Everything Around Me"*
 
 ## 深入阅读
 
+### 相关文档
+
+- [Slash Commands](../slash-commands/) — 命令系统依赖延迟工具发现
+
+### 源代码
+
 - `tools/ToolSearchTool.ts`：工具搜索实现
 - `utils/messages/systemInit.ts`：System prompt 组装（工具列表位置）

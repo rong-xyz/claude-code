@@ -257,3 +257,7 @@ MessagePane 有自己的 messages 状态
 - `state/selectors.ts` — 所有选择器定义
 - `state/onChangeAppState.ts` — 状态变化的 handler
 - `components/` — React 组件实现
+
+---
+
+**下一步** → [Typeahead & Input](typeahead.md)

@@ -140,3 +140,7 @@ useTypeahead Hook 提供：
 - **[Ink Rendering Engine](ink-rendering.md)** — cli/print.ts 如何工作
 - **[State → UI Pipeline](state-to-ui.md)** — AppStateStore 如何驱动 UI
 - **[Typeahead & Input](typeahead.md)** — 交互和补全系统
+
+---
+
+**下一步** → [Ink Rendering](ink-rendering.md)

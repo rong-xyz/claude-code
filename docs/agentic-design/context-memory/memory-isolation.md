@@ -134,6 +134,12 @@ query loop 继续运行
 
 ## 深入阅读
 
+### 相关文档
+
+- [Team Memory Sync](../multi-agent/team-memory.md) — 多 agent 下的 memory 同步
+
+### 源代码
+
 - `query/tokenBudget.ts`：Token 追踪逻辑
 - `services/autoDream/autoDream.ts`：Dream 实现（~11 KB）
 - `services/autoDream/consolidationPrompt.ts`：Consolidation 提示词

@@ -276,3 +276,7 @@ useTypeahead 初始化时：
 - `hooks/useArrowKeyHistory.tsx` — 历史导航的实现（34 KB）
 - `hooks/useGlobalKeybindings.tsx` — 全局键盘快捷键（31 KB）
 - `constants/` — 命令列表和描述
+
+---
+
+**下一步** → [Session State](../session-state/)

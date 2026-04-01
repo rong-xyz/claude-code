@@ -141,6 +141,12 @@ Claude 看到：
 
 ## 深入阅读
 
+### 相关文档
+
+- [Session State](../session-state/) — Dream 在 session 后台运行
+
+### 源代码
+
 - `services/autoDream/autoDream.ts`：Dream 实现
 - `memdir/memdir.ts`：Memory 目录管理
 - `memdir/findRelevantMemories.ts`：相关性搜索

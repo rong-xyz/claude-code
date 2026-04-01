@@ -54,6 +54,12 @@ grand_parent: Agentic Design Overview
 
 ## 深入阅读
 
+### 相关文档
+
+- [Memdir System](../context-memory/memdir-system.md) — memdir 实现细节
+
+### 源代码
+
 - `services/teamMemorySync/`：Team memory 同步实现
 - `memdir/memdir.ts`：Memory 目录管理
 - `coordinator/coordinatorMode.ts`：Coordinator 中的 memory 协调

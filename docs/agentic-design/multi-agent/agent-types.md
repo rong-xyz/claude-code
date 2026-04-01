@@ -97,3 +97,17 @@ const teammates = await createTeam({
 | 隔离度 | 低 | 极高 | 极高 | 中 |
 | 网络开销 | 无 | 有 | 无 | 无 |
 | 内存共享 | 是 | 否 | 否 | 否 |
+
+---
+
+## 深入阅读
+
+### 相关文档
+
+- [Session State](../session-state/) — Remote agent 的 session 生命周期
+- [Bridge & Remote](../bridge-remote/) — Remote agent 的连接协议
+
+### 源代码
+
+- `tools/AgentTool/`：Agent 生成机制
+- `coordinator/`：子 agent 生命周期管理

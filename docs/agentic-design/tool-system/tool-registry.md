@@ -41,5 +41,11 @@ const ANT_ONLY_TOOLS = [REPLTool, ConfigTool, ...]
 
 ## 深入阅读
 
+### 相关文档
+
+- [Permission Rules](../permission-system/rules.md) — 规则如何门控工具访问
+
+### 源代码
+
 - `tools.ts`：Tool 注册和过滤
 - `utils/permissions/permissions.ts`：权限检查

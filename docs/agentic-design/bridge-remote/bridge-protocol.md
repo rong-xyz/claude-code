@@ -241,7 +241,18 @@ scope: ["read"]
 
 ## 深入阅读
 
+### 相关文档
+
+- [Session State](../session-state/) — Bridge 依赖 session 持久化
+- [Permission Modes](../permission-system/modes.md) — 权限在 bridge 中的降级
+
+### 源代码
+
 - `bridge/bridgeApi.ts` — Bridge API 实现
 - `bridge/jwtUtils.ts` — JWT 生成和验证
 - `bridge/trustedDevice.ts` — 设备信任管理
 - `remote/SessionsWebSocket.ts` — WebSocket 服务器
+
+---
+
+**下一步** → [Multi-Client Architecture](multi-client.md)

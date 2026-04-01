@@ -338,6 +338,17 @@ deploy.md 声明需要 BashTool
 
 ## 深入阅读
 
+### 相关文档
+
+- [Tool Registry](../tool-system/tool-registry.md) — SkillTool 的注册
+- [Agent Types](../multi-agent/agent-types.md) — skill 触发的是哪种 agent 类型
+
+### 源代码
+
 - `tools/SkillTool/` — SkillTool 的实现
 - `commands/skill.ts` — /skill 命令本身
 - `~/.claude/commands/` — 用户技能存储（用户本地）
+
+---
+
+**下一步** → [Feature Gating](../advanced/feature-gating.md)

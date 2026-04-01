@@ -245,3 +245,7 @@ AutoCompaction 失败
 - `services/tools/toolExecution.ts` — 工具执行的错误传播
 - `services/api/` — API 调用的重试和降级策略
 - [Circuit Breakers](circuit-breakers.md) — 熔断器的实现细节
+
+---
+
+**下一步** → [Terminal UI](../terminal-ui/)

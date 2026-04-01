@@ -119,4 +119,11 @@ Worker 3 报告（更晚）→ 又得重新来一遍
 
 ## 深入阅读
 
+### 相关文档
+
+- [Context & Memory](../context-memory/) — Coordinator 如何使用 Memory
+- [Error Handling](../error-handling/) — Coordinator 阶段失败恢复
+
+### 源代码
+
 - `coordinator/coordinatorMode.ts`：Coordinator system prompt 和阶段逻辑（~330 行）

@@ -230,3 +230,7 @@ bootstrap/state.ts 检测到：
 - `entrypoints/cli.tsx` — CLI 入口，调用 bootstrap
 - `constants/system.ts` — Base system prompt
 - `utils/settings/` — 配置加载逻辑
+
+---
+
+**下一步** → [Session Persistence](persistence.md)

@@ -121,3 +121,7 @@ Token 用量 → 80%：警告
 - **[Abort Architecture](abort-architecture.md)** — Abort signal 的传播链
 - **[Circuit Breakers](circuit-breakers.md)** — 熔断器和恢复策略
 - **[Recovery Strategies](recovery-strategies.md)** — 各层的重试和降级逻辑
+
+---
+
+**下一步** → [Terminal UI](../terminal-ui/)

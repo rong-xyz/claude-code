@@ -270,7 +270,18 @@ WebUI: "dontAsk"（完全自动，但有 claude.ai 的签名）
 
 ## 深入阅读
 
+### 相关文档
+
+- [Session Persistence](../session-state/persistence.md) — 客户端断开后的 session 保留
+- [Permission Modes](../permission-system/modes.md) — 权限在 bridge 中的降级
+
+### 源代码
+
 - `remote/RemoteSessionManager.ts` — 远程 session 管理
 - `remote/SessionsWebSocket.ts` — WebSocket 服务器实现
 - `remote/remotePermissionBridge.ts` — 权限同步
 - `remote/sdkMessageAdapter.ts` — SDK 消息适配
+
+---
+
+**下一步** → [Slash Commands](../slash-commands/)
