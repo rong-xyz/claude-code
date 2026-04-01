@@ -114,8 +114,9 @@ Agent 之间通过 `<task-notification>` XML 消息通信，memory 以 Markdown 
 | [09](./session-state/) | Session State | 15 min | "Session 如何持久化？" | Bootstrap 启动、JSONL 格式、Session 恢复 |
 | [10](./bridge-remote/) | Bridge & Remote | 20 min | "多客户端如何协作？" | JWT 认证、WebSocket 扇出、设备信任 |
 | [11](./slash-commands/) | Slash Commands | 15 min | "88 个命令是怎么工作的？" | Command 路由、NDJSON 输出、用户技能定义 |
+| [12](./mcp/) | MCP Integration | 20 min | "怎样连接外部工具和 IDE？" | 双重 Server/Client 角色、MCPTool 代理、MCPSearch 模式 |
 
-**预计总用时**：4–5 小时全读，1.5 小时快速扫描（新增 Phase 3 内容）
+**预计总用时**：5–6 小时全读，1.5–2 小时快速扫描（新增 Phase 4-6 内容）
 
 ---
 

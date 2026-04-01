@@ -153,5 +153,6 @@ FileReadTool 和 GrepTool 并发执行（都是读操作）
 - [Tool Interface 与执行 Pipeline](tool-interface.md)
 - [Tool 注册表与权限分类](tool-registry.md)
 - [延迟工具发现机制](deferred-tools.md)
+- [MCP Tools 集成](mcp-tools.md)
 
 下一步：了解 **Tool Interface** 的定义，看看如何统一定义所有工具的接口。

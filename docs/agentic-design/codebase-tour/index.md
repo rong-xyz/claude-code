@@ -97,3 +97,5 @@ Top 15 largest files (最值得读):
 - **[Core Runtime](core-runtime.md)** — Query loop、Tool 系统、Service 层的核心实现
 - **[State & UI](state-ui.md)** — React 状态管理、UI 组件、终端渲染、slash 命令
 - **[Support Modules](support-modules.md)** — 权限系统、工具函数、coordinator、后台任务、记忆管理
+- **[端到端数据流](data-flow.md)** — 追踪用户输入经过所有 13 个系统的完整路径
+- **[术语表](glossary.md)** — 40+ 核心术语定义和快速参考

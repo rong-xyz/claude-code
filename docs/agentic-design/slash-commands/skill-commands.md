@@ -351,4 +351,4 @@ deploy.md 声明需要 BashTool
 
 ---
 
-**下一步** → [Feature Gating](../advanced/feature-gating.md)
+**下一步** → [MCP Integration](../mcp/)
