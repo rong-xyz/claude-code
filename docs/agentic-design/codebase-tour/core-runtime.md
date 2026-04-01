@@ -1,5 +1,5 @@
 ---
-title: Core Runtime
+title: 核心运行时
 layout: default
 nav_order: 1
 parent: Codebase Tour

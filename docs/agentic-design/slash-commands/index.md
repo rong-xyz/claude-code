@@ -1,5 +1,5 @@
 ---
-title: Slash Commands
+title: 斜杠命令
 layout: default
 nav_order: 13
 parent: Agentic Design Overview

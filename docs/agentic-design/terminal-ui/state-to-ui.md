@@ -1,5 +1,5 @@
 ---
-title: State → UI Pipeline
+title: 状态 → UI 流水线
 layout: default
 nav_order: 2
 parent: Terminal UI

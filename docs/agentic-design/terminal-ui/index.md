@@ -1,5 +1,5 @@
 ---
-title: Terminal UI
+title: 终端 UI
 layout: default
 nav_order: 10
 parent: Agentic Design Overview

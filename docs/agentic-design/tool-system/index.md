@@ -1,5 +1,5 @@
 ---
-title: Tool System
+title: Tool 系统
 layout: default
 nav_order: 4
 parent: Agentic Design Overview

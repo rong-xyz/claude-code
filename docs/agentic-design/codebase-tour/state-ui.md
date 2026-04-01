@@ -1,5 +1,5 @@
 ---
-title: State & UI
+title: 状态与 UI
 layout: default
 nav_order: 2
 parent: Codebase Tour

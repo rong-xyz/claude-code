@@ -1,5 +1,5 @@
 ---
-title: Typeahead & Input
+title: Typeahead 与输入
 layout: default
 nav_order: 3
 parent: Terminal UI

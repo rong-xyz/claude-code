@@ -2,6 +2,7 @@
 title: Claude Code Documentation
 layout: home
 nav_order: 1
+nav_exclude: true
 ---
 
 # Claude Code 文档

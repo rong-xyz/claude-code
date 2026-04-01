@@ -1,5 +1,5 @@
 ---
-title: MCP Integration
+title: MCP 集成
 layout: default
 nav_order: 14
 parent: Agentic Design Overview

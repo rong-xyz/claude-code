@@ -1,5 +1,5 @@
 ---
-title: Permission System
+title: Permission 系统
 layout: default
 nav_order: 6
 parent: Agentic Design Overview

@@ -1,5 +1,5 @@
 ---
-title: Agent Loop
+title: 核心 Query Loop
 layout: default
 nav_order: 3
 parent: Agentic Design Overview

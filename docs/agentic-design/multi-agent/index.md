@@ -1,5 +1,5 @@
 ---
-title: Multi-Agent Coordination
+title: 多 Agent 协调
 layout: default
 nav_order: 5
 parent: Agentic Design Overview

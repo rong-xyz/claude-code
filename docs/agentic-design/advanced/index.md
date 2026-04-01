@@ -1,5 +1,5 @@
 ---
-title: Advanced Topics
+title: 高级主题
 layout: default
 nav_order: 8
 parent: Agentic Design Overview

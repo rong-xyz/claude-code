@@ -1,5 +1,5 @@
 ---
-title: Codebase Tour
+title: 代码库全景
 layout: default
 nav_order: 2
 parent: Agentic Design Overview

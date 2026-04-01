@@ -1,5 +1,5 @@
 ---
-title: Session State
+title: Session 状态
 layout: default
 nav_order: 11
 parent: Agentic Design Overview

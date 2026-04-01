@@ -1,5 +1,5 @@
 ---
-title: Ink Rendering Engine
+title: Ink 渲染引擎
 layout: default
 nav_order: 1
 parent: Terminal UI
