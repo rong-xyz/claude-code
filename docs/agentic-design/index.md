@@ -2,7 +2,6 @@
 title: Agentic Design Overview
 layout: default
 nav_order: 1
-parent: Claude Code Documentation
 has_children: true
 ---
 
@@ -104,8 +103,8 @@ Agent 之间通过 `<task-notification>` XML 消息通信，memory 以 Markdown 
 | 编号 | 文档 | 用时 | 核心问题 | 新增内容 |
 |------|------|------|---------|---------|
 | [00](./00-codebase-tour.md) | 代码库目录全景 | 30 min | "这个 repo 里有什么？" | 完整文件系统导航 |
-| [01](./01-agent-loop.md) | 核心 Query Loop | 25 min | "Agent 是如何循环运作的？" | System Reminders、三层压缩、Co-evolution 设计 |
-| [02](./02-tool-system.md) | Tool 系统 | 25 min | "Tool 是怎么被定义和执行的？" | 延迟工具发现、Prompt cache 优化、流式并发执行 |
+| [01](./agent-loop/) | 核心 Query Loop | 25 min | "Agent 是如何循环运作的？" | System Reminders、三层压缩、Co-evolution 设计 |
+| [02](./tool-system/) | Tool 系统 | 25 min | "Tool 是怎么被定义和执行的？" | 延迟工具发现、Prompt cache 优化、流式并发执行 |
 | [03](./03-multi-agent-coordination.md) | 多 Agent 协调 | 30 min | "多个 agent 怎么协作？" | 四种 agent 类型、Coordinator 4 阶段、XML 协议 |
 | [04](./04-permission-system.md) | Permission 系统 | 25 min | "Agent 怎么知道自己能做什么？" | 五层防线、YOLO 分类器、路径安全 |
 | [05](./05-context-and-memory.md) | Context 与 Memory | 30 min | "Context window 满了怎么办？" | Cache-aware 分层、三层压缩、autoDream 巩固 |

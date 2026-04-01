@@ -3,6 +3,7 @@ title: Tool System
 layout: default
 nav_order: 4
 parent: Agentic Design Overview
+has_children: true
 ---
 
 # Tool 系统：Agent 影响世界的手段
@@ -19,32 +20,9 @@ Tool 系统解决的问题：
 
 ---
 
-## 核心概念：Tool Interface
-
-每个 Tool 必须满足统一接口（`Tool.ts`）：
-
-```typescript
-interface Tool<T extends ZodSchema> {
-  name: string                    // 模型识别 tool 的名称，如 "FileReadTool"
-  description: string             // 模型理解 tool 用途（出现在 system prompt 中）
-  inputSchema: T                  // Zod schema，模型生成的参数必须符合
-  call(input: z.infer<T>, ctx: ToolUseContext): AsyncGenerator<ToolResult>
-  isSafe?: boolean                // 是否"安全"（影响权限决策）
-  shouldDefer?: boolean           // 是否延迟发现（见下文）
-  internalMetadata?: { ... }      // 内部使用，不会发给模型
-}
-```
-
-**Tool Execution Context（`ToolUseContext`）** 提供给每个 tool：
-- `readFileState`：文件系统缓存，避免重复读取
-- `getAppState`：全局 React 状态访问
-- `setToolJSX`：向终端 UI 渲染自定义组件
-- `mcpClients`：外部 MCP 协议连接
-- `abortController`：取消信号
-
----
-
 ## 工具分类：40+ 个工具
+
+Claude Code 提供了 40+ 个工具，按类别分为三组：
 
 ### 文件与 Shell 工具
 
@@ -149,121 +127,6 @@ FileReadTool 和 GrepTool 并发执行（都是读操作）
 
 ---
 
-## Tool 执行 Pipeline
-
-从"模型调用 tool"到"返回结果"的完整流程：
-
-```
-Query Loop 收到 tool_use block
-  │
-  ├─ 1. 输入验证（Zod schema）
-  │     - 确保模型没有传入格式错误的参数
-  │     - 路径、字符串类型等全部检查
-  │
-  ├─ 2. 权限检查（utils/permissions/）
-  │     - Mode 检查（bypass / default / auto / dontAsk）
-  │     - Always Allow / Always Deny 规则匹配
-  │     - YOLO 分类器自动审批
-  │     - 如果拒绝 → 返回 permission_denied error
-  │
-  ├─ 3. 执行 Tool
-  │     - 调用 tool.call(input, ctx)
-  │     - 得到 AsyncGenerator
-  │     - 流式 yield ToolProgressData（实时显示进度）
-  │
-  ├─ 4. 收集 / 截断结果
-  │     - 大输出通过 ContentReplacementState 截断
-  │     - 或存为附件，不直接放入 context window
-  │
-  └─ 5. 发送给 Claude
-        - 组合为 tool_result block
-        - 追加到 messages 数组
-        - 继续 Query Loop
-```
-
----
-
-## 并发执行：多个 Tool 同时运行
-
-一条 Claude 消息中可能包含多个 `tool_use` block：
-
-```
-Claude:
-  1. 读文件 A（tool_use id=1）
-  2. 读文件 B（tool_use id=2）
-  3. 读文件 C（tool_use id=3）
-```
-
-这三个 tool 可以**并发执行**，但有几个复杂性：
-
-### In-Order Emission（保序输出）
-
-虽然执行可能乱序，但**结果必须按调用顺序返回**：
-
-```
-调用顺序: tool_1, tool_2, tool_3
-执行时序:         tool_2 ✓（快速）
-        tool_1 ✓（较慢）
-                         tool_3 ✓
-
-返回顺序: tool_1 结果 → tool_2 结果 → tool_3 结果
-```
-
-实现方式：结果缓冲 + 有序 emit：
-
-```typescript
-const results = new Map<number, ToolResult>()
-let nextIdToEmit = 0
-
-for each completed tool {
-  results.set(tool.id, tool.result)
-  while (results.has(nextIdToEmit)) {
-    yield results.get(nextIdToEmit)
-    nextIdToEmit++
-  }
-}
-```
-
-### Sibling Abort（快速失败）
-
-如果一个 tool 失败，其**兄弟 tool 会被立即取消**：
-
-```
-tool_1 → 运行中
-tool_2 → 抛异常 ✗
-tool_3 → 运行中
-
-↓ tool_2 失败时立即 abort tool_1 和 tool_3
-↓ 整个批次失败，告知 Claude 出了问题
-```
-
----
-
-## Tool 注册与过滤
-
-在 `tools.ts` 中，所有 tool 通过 `buildTool` 工厂函数创建，注册到中央注册表：
-
-```typescript
-const ALL_TOOLS: Tool[] = [
-  AgentTool,
-  BashTool,
-  FileReadTool,
-  FileEditTool,
-  ...
-]
-```
-
-然后根据用户权限和配置进行过滤：
-
-```typescript
-const PUBLIC_TOOLS = ALL_TOOLS.filter(t => !t.internalOnly)
-const ANT_ONLY_TOOLS = [REPLTool, ConfigTool, ...]
-```
-
-**`buildTool` 工厂模式**保证：所有 tool 都有一致的类型安全和默认行为。
-
----
-
 ## Safe vs Unsafe Tool 分类
 
 | 类型 | 典型工具 | 特点 |
@@ -271,64 +134,6 @@ const ANT_ONLY_TOOLS = [REPLTool, ConfigTool, ...]
 | 只读（低风险） | `FileReadTool`, `GlobTool`, `GrepTool`, `WebFetchTool` | 无副作用，auto mode 下自动执行 |
 | 写操作（中风险） | `FileEditTool`, `FileWriteTool`, `BashTool`（git 命令） | 需规则匹配或 YOLO 分类器 |
 | 高风险 | `BashTool`（任意命令）, `AgentTool`, `REPLTool` | 通常需要用户确认 |
-
----
-
-## 进度渲染与 Streaming
-
-Tool 执行时会 emit 类型化的进度数据，实时显示在终端：
-
-| 进度类型 | 场景 |
-|---------|------|
-| `BashProgress` | Shell 命令的 stdout / stderr 流式输出 |
-| `MCPProgress` | 远程 tool 调用状态 |
-| `WebSearchProgress` | 搜索词 + 结果数量 |
-| `REPLToolProgress` | 代码求值的中间输出 |
-
-大输出通过 `ContentReplacementState` 截断或转为附件，避免撑爆 context window。
-
----
-
-## Design Decision 专栏
-
-### 为什么 Tool 返回 `AsyncGenerator` 而不是 `Promise<string>`？
-
-不好的设计：
-```typescript
-call(input): Promise<string> {
-  const result = await readFile(input.path)
-  return result  // 10 MB 的代码文件？用户一直等
-}
-```
-
-更好的设计：
-```typescript
-call(input): AsyncGenerator<ToolResult> {
-  yield { type: "progress", message: "Reading..." }
-  const content = await readFile(input.path)
-  yield { type: "content", data: content }
-  yield { type: "complete", lines: 100 }
-}
-```
-
-Generator 把**长时间操作的透明度**提升为一级特性——UI 立即显示进度，用户不会以为卡住了。
-
-### 为什么 FileEditTool 用精确字符串匹配而不是行号？
-
-行号方式的问题：
-```
-第 42 行插入代码
-→ 但 Claude 读文件时是第 42 行，执行时已被编辑成第 45 行了
-→ 插到错误位置
-```
-
-精确字符串匹配：
-```typescript
-// 找到这段文本（只允许出现一次），替换为新文本
-{ old_text: "function foo() {", new_text: "function bar() {" }
-```
-
-精确匹配保证了**编辑的确定性**——如果 old_text 出现多次，操作失败，强迫 Claude 提供更精确的上下文。
 
 ---
 
@@ -345,10 +150,8 @@ Generator 把**长时间操作的透明度**提升为一级特性——UI 立即
 
 ## 深入阅读
 
-- `Tool.ts`：Tool interface 定义
-- `tools.ts`：Tool 注册和过滤
-- `services/tools/StreamingToolExecutor.ts`：并发执行编排
-- `utils/permissions/permissions.ts`：权限检查
-- `tools/AgentTool/AgentTool.tsx`：最复杂的 tool（~233 KB）
+- [Tool Interface 与执行 Pipeline](tool-interface.md)
+- [Tool 注册表与权限分类](tool-registry.md)
+- [延迟工具发现机制](deferred-tools.md)
 
-下一步：去了解**多 Agent 协调**，看看当 Claude 想要 spawn 一个子 agent 时，系统如何支持这个。
+下一步：了解 **Tool Interface** 的定义，看看如何统一定义所有工具的接口。

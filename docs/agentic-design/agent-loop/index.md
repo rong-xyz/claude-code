@@ -3,6 +3,7 @@ title: Agent Loop
 layout: default
 nav_order: 3
 parent: Agentic Design Overview
+has_children: true
 ---
 
 # 核心 Query Loop：Agent 的心脏
@@ -158,91 +159,6 @@ abort_signal?                   → 用户中断
 
 ---
 
-## System Reminders：比 System Prompt 更有效的指令注入
-
-这是源码中最令人惊讶的工程决策之一。
-
-Claude Code 不只在 system prompt 中给出指令，还**在工具返回结果和用户消息中嵌入指令**。例如：
-
-- 每次工具调用后，会注入更新的 TODO 列表状态
-- 在对话开始时注入"不要创建不必要的文件"
-- 每次文件读取后，注入"检测到潜在恶意代码时必须举报"提醒
-
-**为什么这样做有效？** 研究者 Jannes Klaas 发现：在长会话（几百步）中，模型容易"遗忘"系统提示中的指令——因为 system prompt 距离当前生成位置太远。而嵌入在最近工具结果中的提醒，离当前 attention 更近，**指令遵从率显著更高**。
-
-```
-传统方式：
-  [system prompt: "不要创建文件"] ... [500步后] ... 模型忘了
-
-System Reminder 方式：
-  [system prompt] ... [工具结果 + "提醒：不要创建文件"] ... 模型记住了
-```
-
-这一技术被称为 **System Reminders**，是 Claude Code 在长会话中保持行为一致性的核心机制。
-
----
-
-## Streaming 与 Tool Call 的交织
-
-这是一个复杂的地方。API 可能在单条消息中返回混合内容：
-
-```json
-{
-  "content": [
-    { "type": "text", "text": "让我先读文件..." },
-    { "type": "tool_use", "id": "t_1", "name": "FileReadTool", "input": {...} },
-    { "type": "text", "text": "现在我看到问题了..." },
-    { "type": "tool_use", "id": "t_2", "name": "FileEditTool", "input": {...} }
-  ]
-}
-```
-
-所以一条消息中可能**混合了文本和 tool call**。Loop 需要：
-- 收集每个 `tool_use` block 的完整输入参数（可能分段到达）
-- 在 `tool_use` 结束时**立即执行**（不等待消息全部返回）
-- 继续接收后续的文本或 tool call
-- 当消息完全接收后，将所有 tool 结果作为一条 user 消息发回
-
-这使得 **interleaved thinking** 成为可能：模型可以一边思考一边调用工具。
-
----
-
-## Token Budget：Context Window 的有限性
-
-Context window 是有限的（Claude Code 使用约 **200K tokens** 的上下文窗口，Sonnet 4.0 上为 195,072 tokens）。Token budget 逻辑：
-
-```
-available_tokens = context_window_size - system_prompt_tokens - reserved_buffer
-
-每一轮后：
-  usage = response.usage（API 返回的实际使用）
-  remaining = available_tokens - usage.input_tokens - usage.output_tokens
-
-  if remaining < threshold:
-      触发 compaction（压缩历史）
-
-  if remaining < min_required:
-      拒绝继续，返回错误
-```
-
-**Threshold** 通常设得比较激进——上下文使用率达约 **92–95%** 时就开始压缩，以避免在真的耗尽时无法完成压缩操作。
-
-相关文件：`query/tokenBudget.ts`
-
----
-
-## Compaction：三层递进压缩
-
-当 token 预算吃紧时，loop 会触发分层压缩策略（详见"Context & Memory"篇），简要流程：
-
-1. **MicroCompact（第一层）**：无需 API 调用，直接在本地截断或清理工具输出结果
-2. **AutoCompact（第二层）**：触发 Claude API 对历史消息生成摘要，用摘要替换原始消息
-3. **SnipCompact（第三层）**：激进截断，特性门控
-
-这保证了 loop 可以持续运行，即使初始历史很长。
-
----
-
 ## Design Decision 专栏
 
 ### 为什么用 `AsyncGenerator` 而不是 callback？
@@ -318,4 +234,4 @@ Tool 执行完全不涉及 Claude API 的额外调用（除非 tool 本身调用
 - `services/tools/StreamingToolExecutor.ts`：Tool 执行编排
 - `query/stopHooks.ts`：终止条件检查
 
-下一步：去了解 **Tool 系统**是如何设计的，使得这个 loop 可以灵活地执行任意 tool。
+下一步：去了解 **[Streaming 与 Tool 交织](streaming.md)**，明确 loop 如何并发执行多个 tool。
