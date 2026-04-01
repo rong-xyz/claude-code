@@ -11,7 +11,7 @@ baseurl: "/claude-code"
 repository: "rong-xyz/claude-code"
 
 # Theme configuration
-theme: just-the-docs
+remote_theme: just-the-docs/just-the-docs
 
 # Just-the-Docs settings
 color_scheme: light
@@ -40,6 +40,7 @@ footer_content: "Copyright &copy; 2024 Anthropic. All rights reserved."
 
 # Build settings
 plugins:
+  - jekyll-remote-theme
   - jekyll-seo-tag
   - jekyll-github-metadata
 
