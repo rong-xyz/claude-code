@@ -2,7 +2,7 @@
 title: Bridge Protocol
 layout: default
 nav_order: 1
-parent: Bridge parent: Bridge & Remote Remote
+parent: Bridge & Remote
 grand_parent: Agentic Design Overview
 ---
 
