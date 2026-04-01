@@ -102,13 +102,13 @@ Agent 之间通过 `<task-notification>` XML 消息通信，memory 以 Markdown 
 
 | 编号 | 文档 | 用时 | 核心问题 | 新增内容 |
 |------|------|------|---------|---------|
-| [00](./00-codebase-tour.md) | 代码库目录全景 | 30 min | "这个 repo 里有什么？" | 完整文件系统导航 |
+| [00](./codebase-tour/) | 代码库目录全景 | 30 min | "这个 repo 里有什么？" | 完整文件系统导航 |
 | [01](./agent-loop/) | 核心 Query Loop | 25 min | "Agent 是如何循环运作的？" | System Reminders、三层压缩、Co-evolution 设计 |
 | [02](./tool-system/) | Tool 系统 | 25 min | "Tool 是怎么被定义和执行的？" | 延迟工具发现、Prompt cache 优化、流式并发执行 |
 | [03](./multi-agent/) | 多 Agent 协调 | 30 min | "多个 agent 怎么协作？" | 四种 agent 类型、Coordinator 4 阶段、XML 协议 |
 | [04](./permission-system/) | Permission 系统 | 25 min | "Agent 怎么知道自己能做什么？" | 五层防线、YOLO 分类器、路径安全 |
 | [05](./context-memory/) | Context 与 Memory | 30 min | "Context window 满了怎么办？" | Cache-aware 分层、三层压缩、autoDream 巩固 |
-| [06](./06-feature-gating.md) | Feature Flag 系统 | 15 min | "内部功能是怎么隐藏的？" | 编译期/运行期双层隔离、KAIROS/ULTRAPLAN/BUDDY |
+| [06](./advanced/feature-gating.md) | Feature Flag 系统 | 15 min | "内部功能是怎么隐藏的？" | 编译期/运行期双层隔离、KAIROS/ULTRAPLAN/BUDDY |
 
 **预计总用时**：2.5–3 小时全读，1 小时快速扫描
 
