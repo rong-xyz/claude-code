@@ -1,34 +1,153 @@
 ---
 title: Claude Code Documentation
-layout: home
+layout: default
 nav_order: 1
-nav_exclude: true
+has_children: true
 ---
 
-# Claude Code 文档
+# Claude Code Agentic 设计文档
 
-欢迎来到 Claude Code 的官方文档。Claude Code 是 Anthropic 的官方 AI 编程 CLI 工具，通过交互式 agent 接口实现强大的软件工程任务。
-
-## 学习资源
-
-本文档提供深入的指南，帮助理解 Claude Code 的架构和 agentic 系统设计原理。
-
-### [Agentic Design 学习路径]({{ site.baseurl }}/agentic-design/)
-
-一份全面的学习资料，涵盖 Claude Code 最核心的设计决策：
-
-- **[00: 代码库全景]({{ site.baseurl }}/agentic-design/00-codebase-tour)** — 代码库结构导游，从顶层到最深处
-- **[01: Agent Loop]({{ site.baseurl }}/agentic-design/01-agent-loop)** — 核心 Query Loop，`while(tool_use)` 的艺术
-- **[02: Tool 系统]({{ site.baseurl }}/agentic-design/02-tool-system)** — 40+ 工具的统一接口设计
-- **[03: 多 Agent 协调]({{ site.baseurl }}/agentic-design/03-multi-agent-coordination)** — 分解复杂任务，四种 agent 类型
-- **[04: Permission 系统]({{ site.baseurl }}/agentic-design/04-permission-system)** — 五层防线的安全沙箱
-- **[05: Context & Memory]({{ site.baseurl }}/agentic-design/05-context-and-memory)** — 上下文窗口和记忆管理
-- **[06: Feature Gating]({{ site.baseurl }}/agentic-design/06-feature-gating)** — 内部功能的编译期/运行期隔离
-
-## 快速开始
-
-从 [Agentic Design 学习路径]({{ site.baseurl }}/agentic-design/) 开始，获得完整的学习概览和推荐阅读顺序。
+> **目标读者**：有一定软件工程背景、希望通过真实项目理解 agentic 系统设计的学习者。
+> **建议用时**：约 2.5 小时
+> **阅读语言**：中文正文 + 英文技术术语
 
 ---
 
-**最新更新**（2026 年 4 月）：基于 Claude Code 源码泄露分析，所有文档已大幅扩充。详见 [GitHub 仓库](https://github.com/rong-xyz/claude-code)。
+## 这个项目是什么？
+
+[Claude Code](https://claude.ai/code) 是 Anthropic 开发的 AI 辅助编程 CLI 工具。它不是一个简单的"问答机器人"，而是一个完整的 **agentic system**：
+
+- 它可以自主执行多轮工具调用（读文件、改代码、运行命令）
+- 它可以 spawn 子 agent 并行处理复杂任务
+- 它有 permission 管控、memory 管理、context 压缩等完整的 agent 基础设施
+
+这套文档通过分析 Claude Code 的源代码，提炼出其中最有价值的 agentic 设计选择，帮助你建立对真实 agent 系统的直觉。
+
+---
+
+## 整体架构
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         用户 / IDE / SDK                         │
+└────────────────────────────┬────────────────────────────────────┘
+                             │ 输入：用户消息
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    CLI / Entrypoint Layer                        │
+│  entrypoints/cli.tsx  │  entrypoints/sdk/  │  entrypoints/mcp/  │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      Query Loop Engine                          │
+│         QueryEngine.ts  ←→  query.ts  ←→  query/               │
+│     (状态机: QUERY → TOOL_USE → RESULT → QUERY → ...)           │
+└──────────────┬────────────────────────────────┬─────────────────┘
+               │                                │
+               ▼                                ▼
+┌──────────────────────────┐    ┌───────────────────────────────┐
+│    Claude API (Streaming) │    │      Tool Execution Layer     │
+│  services/api/           │    │  services/tools/              │
+│  • token budget 追踪      │    │  • StreamingToolExecutor      │
+│  • compaction 触发        │    │  • 并发控制 + sibling abort   │
+└──────────────────────────┘    └──────────────┬────────────────┘
+                                               │
+                            ┌──────────────────┼──────────────────┐
+                            │                  │                  │
+                            ▼                  ▼                  ▼
+                     ┌─────────┐        ┌──────────┐      ┌──────────────┐
+                     │  File   │        │  Bash /  │      │  AgentTool   │
+                     │  Tools  │        │  Shell   │      │ (子 agent)   │
+                     └─────────┘        └──────────┘      └──────┬───────┘
+                                                                  │
+                                         ┌────────────────────────┘
+                                         │ spawn
+                                         ▼
+                              ┌────────────────────────┐
+                              │   子 Agent / Coordinator│
+                              │   coordinator/          │
+                              │   tasks/Local|Remote    │
+                              └────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                     横切关注点（Cross-cutting）                   │
+│  Permission System  │  Context/Memory  │  Feature Gating        │
+│  utils/permissions/ │  memdir/ autoDream│  bootstrap/state.ts   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 核心设计哲学
+
+**1. Tool 是 Agent 触碰世界的唯一手段**
+Agent 的所有副作用（写文件、执行命令、发消息）都必须经过 Tool 接口，这使得权限控制、审计日志、测试 mock 都可以在一个地方统一处理。
+
+**2. Text is the protocol**
+Agent 之间通过 `<task-notification>` XML 消息通信，memory 以 Markdown 文件存储，permission rules 是 `Bash(git *)` 这样的字符串模式。用文本作为协议，意味着 AI 模型自己也可以读懂并调试这些通信内容。
+
+**3. Failure modes are first-class**
+每个长时间运行的操作都有明确的 abort 路径，例如：连续 3 次 permission denial 就回退到手动提示；并行 tool 中一个失败会触发 sibling abort；compaction 失败有 rollback 保护。
+
+**4. Context window 是最稀缺的资源**
+整个系统的大量设计决策（system prompt 的静态/动态分割、token budget 追踪、auto-dream 后台压缩）都围绕着"如何最大化利用有限的 context window"展开。
+
+**5. 编译期与运行期特性隔离**
+内部功能通过 Bun 的 `feature()` API 在编译时消除，不出现在公开二进制文件中；运行时行为通过 GrowthBook runtime flags 动态控制。
+
+---
+
+## 建议阅读顺序
+
+| 编号 | 文档 | 用时 | 核心问题 | 新增内容 |
+|------|------|------|---------|---------|
+| [00](./agentic-design/codebase-tour/) | 代码库目录全景 | 30 min | "这个 repo 里有什么？" | 完整文件系统导航 |
+| [01](./agentic-design/agent-loop/) | 核心 Query Loop | 25 min | "Agent 是如何循环运作的？" | System Reminders、三层压缩、Co-evolution 设计 |
+| [02](./agentic-design/tool-system/) | Tool 系统 | 25 min | "Tool 是怎么被定义和执行的？" | 延迟工具发现、Prompt cache 优化、流式并发执行 |
+| [03](./agentic-design/multi-agent/) | 多 Agent 协调 | 30 min | "多个 agent 怎么协作？" | 四种 agent 类型、Coordinator 4 阶段、XML 协议 |
+| [04](./agentic-design/permission-system/) | Permission 系统 | 25 min | "Agent 怎么知道自己能做什么？" | 五层防线、YOLO 分类器、路径安全 |
+| [05](./agentic-design/context-memory/) | Context 与 Memory | 30 min | "Context window 满了怎么办？" | Cache-aware 分层、三层压缩、autoDream 巩固 |
+| [06](./agentic-design/advanced/feature-gating.md) | Feature Flag 系统 | 15 min | "内部功能是怎么隐藏的？" | 编译期/运行期双层隔离、KAIROS/ULTRAPLAN/BUDDY |
+| [07](./agentic-design/error-handling/) | Error Handling | 20 min | "失败时怎么办？" | Abort 信号传播、熔断器、分层恢复 |
+| [08](./agentic-design/terminal-ui/) | Terminal UI | 20 min | "用户怎么看到输出？" | React+Ink 渲染、print.ts 输出漏斗、Typeahead |
+| [09](./agentic-design/session-state/) | Session State | 15 min | "Session 如何持久化？" | Bootstrap 启动、JSONL 格式、Session 恢复 |
+| [10](./agentic-design/bridge-remote/) | Bridge & Remote | 20 min | "多客户端如何协作？" | JWT 认证、WebSocket 扇出、设备信任 |
+| [11](./agentic-design/slash-commands/) | Slash Commands | 15 min | "88 个命令是怎么工作的？" | Command 路由、NDJSON 输出、用户技能定义 |
+| [12](./agentic-design/mcp/) | MCP Integration | 20 min | "怎样连接外部工具和 IDE？" | 双重 Server/Client 角色、MCPTool 代理、MCPSearch 模式 |
+
+**预计总用时**：5–6 小时全读，1.5–2 小时快速扫描（新增 Phase 4-6 内容）
+
+---
+
+## 本次更新（2026 年 4 月）
+
+基于 2026 年 3 月源码泄露（Kuberwastaken deepwiki 分析 + compass.md 深度研究）对所有文档的重大扩充：
+
+### 新增关键洞察
+
+- **System Reminders**（比 system prompt 更有效）：嵌入在工具结果中的指令，在长会话中的遵从率显著更高
+- **Prompt Cache 优化**：字母排序的工具列表、静态/动态 system prompt 分割，单个 session 可节省 50% API 成本
+- **三层压缩策略**：MicroCompact（本地）→ AutoCompact（API）→ SnipCompact（激进修剪）
+- **autoDream 自动化**：每 24 小时后台巩固 MEMORY.md，用户无感，长期知识不丢失
+- **五层权限防线**：Mode → Rules → Risk Classification → YOLO Classifier → User Prompt
+- **Coordinator 4 阶段**：Research → Synthesis → Implementation → Verification，用 XML 协议通信
+- **四种 Agent 类型**：local（进程内） / remote（CCR 云容器，最多 30min） / forked（子进程） / teammate（同进程伴侣）
+
+### 数据与事实
+
+- **实际代码统计**：QueryEngine ~46K 行、Tool.ts ~29K 行、commands.ts ~25K 行、权限系统 300+ KB、AgentTool ~233 KB
+- **工具数量**：40+ 权限门控工具，其中 ~18 个延迟发现
+- **系统提示词规模**：~8000–12000 tokens（基础 ~2900 + 工具定义 ~3000 + 补充内容）
+- **内部代号**：Tengu（主项目）、Capybara（Claude 4.6）、KAIROS（永驻助手）、ULTRAPLAN（深度规划 30min）、BUDDY（电子宠物）
+- **未发布功能**：44 个功能标志，包括 VOICE_MODE、BRIDGE_MODE、CHICAGO（计算机使用）等
+
+---
+
+## 如何使用这套文档
+
+- **按顺序读**：00 → 01 → 02 → 03 → 04 → 05 → 06，每篇都假设你已读过前面的内容
+- **跳读**：如果你已熟悉某个概念，可以直接跳到感兴趣的章节
+- **对照代码**：每篇文档都标注了关键源文件路径和代码行数，随时可以打开源代码对照阅读
+- **关注 Design Decision 专栏**：这些是最有学习价值的地方，解释了"为什么这样设计"而不只是"是什么"
+- **阅读表格和代码示例**：大量表格总结、流程图和代码片段帮助理解复杂概念
