@@ -109,8 +109,13 @@ Agent 之间通过 `<task-notification>` XML 消息通信，memory 以 Markdown 
 | [04](./permission-system/) | Permission 系统 | 25 min | "Agent 怎么知道自己能做什么？" | 五层防线、YOLO 分类器、路径安全 |
 | [05](./context-memory/) | Context 与 Memory | 30 min | "Context window 满了怎么办？" | Cache-aware 分层、三层压缩、autoDream 巩固 |
 | [06](./advanced/feature-gating.md) | Feature Flag 系统 | 15 min | "内部功能是怎么隐藏的？" | 编译期/运行期双层隔离、KAIROS/ULTRAPLAN/BUDDY |
+| [07](./error-handling/) | Error Handling | 20 min | "失败时怎么办？" | Abort 信号传播、熔断器、分层恢复 |
+| [08](./terminal-ui/) | Terminal UI | 20 min | "用户怎么看到输出？" | React+Ink 渲染、print.ts 输出漏斗、Typeahead |
+| [09](./session-state/) | Session State | 15 min | "Session 如何持久化？" | Bootstrap 启动、JSONL 格式、Session 恢复 |
+| [10](./bridge-remote/) | Bridge & Remote | 20 min | "多客户端如何协作？" | JWT 认证、WebSocket 扇出、设备信任 |
+| [11](./slash-commands/) | Slash Commands | 15 min | "88 个命令是怎么工作的？" | Command 路由、NDJSON 输出、用户技能定义 |
 
-**预计总用时**：2.5–3 小时全读，1 小时快速扫描
+**预计总用时**：4–5 小时全读，1.5 小时快速扫描（新增 Phase 3 内容）
 
 ---
 
