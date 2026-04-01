@@ -2,7 +2,7 @@
 title: 术语表
 layout: default
 nav_order: 5
-parent: Codebase Tour
+parent: 代码库全景
 grand_parent: Agentic Design Overview
 ---
 

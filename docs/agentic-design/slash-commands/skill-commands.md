@@ -2,7 +2,7 @@
 title: Skill Commands
 layout: default
 nav_order: 2
-parent: Slash Commands
+parent: 斜杠命令
 grand_parent: Agentic Design Overview
 ---
 

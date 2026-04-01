@@ -2,7 +2,7 @@
 title: Typeahead 与输入
 layout: default
 nav_order: 3
-parent: Terminal UI
+parent: 终端 UI
 grand_parent: Agentic Design Overview
 ---
 

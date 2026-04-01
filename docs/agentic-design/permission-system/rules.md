@@ -2,7 +2,7 @@
 title: 规则系统与 YOLO 分类器
 layout: default
 nav_order: 2
-parent: Permission System
+parent: Permission 系统
 grand_parent: Agentic Design Overview
 ---
 

@@ -2,7 +2,7 @@
 title: 高级 Agent 模式
 layout: default
 nav_order: 3
-parent: Advanced Topics
+parent: 高级主题
 grand_parent: Agentic Design Overview
 ---
 

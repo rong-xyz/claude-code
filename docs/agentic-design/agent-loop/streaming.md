@@ -2,7 +2,7 @@
 title: Streaming 与 Tool 交织
 layout: default
 nav_order: 1
-parent: Agent Loop
+parent: 核心 Query Loop
 grand_parent: Agentic Design Overview
 ---
 

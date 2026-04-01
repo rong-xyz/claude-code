@@ -2,7 +2,7 @@
 title: Team Memory 同步
 layout: default
 nav_order: 5
-parent: Multi-Agent Coordination
+parent: 多 Agent 协调
 grand_parent: Agentic Design Overview
 ---
 

@@ -2,7 +2,7 @@
 title: Session Persistence
 layout: default
 nav_order: 2
-parent: Session State
+parent: Session 状态
 grand_parent: Agentic Design Overview
 ---
 

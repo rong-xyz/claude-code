@@ -2,7 +2,7 @@
 title: Circuit Breakers
 layout: default
 nav_order: 2
-parent: Error Handling
+parent: 错误处理
 grand_parent: Agentic Design Overview
 ---
 

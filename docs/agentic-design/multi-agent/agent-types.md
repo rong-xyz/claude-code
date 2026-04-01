@@ -2,7 +2,7 @@
 title: 四种 Agent 类型
 layout: default
 nav_order: 1
-parent: Multi-Agent Coordination
+parent: 多 Agent 协调
 grand_parent: Agentic Design Overview
 ---
 

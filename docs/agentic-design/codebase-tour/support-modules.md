@@ -2,7 +2,7 @@
 title: 支持模块
 layout: default
 nav_order: 3
-parent: Codebase Tour
+parent: 代码库全景
 grand_parent: Agentic Design Overview
 ---
 

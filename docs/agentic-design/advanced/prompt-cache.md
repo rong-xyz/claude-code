@@ -2,7 +2,7 @@
 title: Prompt Cache 优化策略
 layout: default
 nav_order: 2
-parent: Advanced Topics
+parent: 高级主题
 grand_parent: Agentic Design Overview
 ---
 

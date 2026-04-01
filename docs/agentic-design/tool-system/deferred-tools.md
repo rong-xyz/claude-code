@@ -2,7 +2,7 @@
 title: 延迟工具发现机制
 layout: default
 nav_order: 3
-parent: Tool System
+parent: Tool 系统
 grand_parent: Agentic Design Overview
 ---
 

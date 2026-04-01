@@ -2,7 +2,7 @@
 title: 状态 → UI 流水线
 layout: default
 nav_order: 2
-parent: Terminal UI
+parent: 终端 UI
 grand_parent: Agentic Design Overview
 ---
 

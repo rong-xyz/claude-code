@@ -2,7 +2,7 @@
 title: Tool 注册表与权限分类
 layout: default
 nav_order: 2
-parent: Tool System
+parent: Tool 系统
 grand_parent: Agentic Design Overview
 ---
 

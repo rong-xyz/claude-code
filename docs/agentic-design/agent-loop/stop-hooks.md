@@ -2,7 +2,7 @@
 title: System Reminders 与停止条件
 layout: default
 nav_order: 3
-parent: Agent Loop
+parent: 核心 Query Loop
 grand_parent: Agentic Design Overview
 ---
 

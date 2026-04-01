@@ -2,7 +2,7 @@
 title: Coordinator 4 阶段模式
 layout: default
 nav_order: 3
-parent: Multi-Agent Coordination
+parent: 多 Agent 协调
 grand_parent: Agentic Design Overview
 ---
 

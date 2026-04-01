@@ -2,7 +2,7 @@
 title: Bootstrap & Cold Start
 layout: default
 nav_order: 1
-parent: Session State
+parent: Session 状态
 grand_parent: Agentic Design Overview
 ---
 

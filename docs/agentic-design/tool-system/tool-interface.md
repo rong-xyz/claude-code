@@ -2,7 +2,7 @@
 title: Tool Interface 与执行 Pipeline
 layout: default
 nav_order: 1
-parent: Tool System
+parent: Tool 系统
 grand_parent: Agentic Design Overview
 ---
 

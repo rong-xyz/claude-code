@@ -2,7 +2,7 @@
 title: 状态与 UI
 layout: default
 nav_order: 2
-parent: Codebase Tour
+parent: 代码库全景
 grand_parent: Agentic Design Overview
 ---
 

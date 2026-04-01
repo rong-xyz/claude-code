@@ -2,7 +2,7 @@
 title: MCP Tools 集成
 layout: default
 nav_order: 4
-parent: Tool System
+parent: Tool 系统
 grand_parent: Agentic Design Overview
 ---
 

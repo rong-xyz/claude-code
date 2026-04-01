@@ -2,7 +2,7 @@
 title: Recovery Strategies
 layout: default
 nav_order: 3
-parent: Error Handling
+parent: 错误处理
 grand_parent: Agentic Design Overview
 ---
 

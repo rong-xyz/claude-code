@@ -2,7 +2,7 @@
 title: Permission Modes 与决策 Pipeline
 layout: default
 nav_order: 1
-parent: Permission System
+parent: Permission 系统
 grand_parent: Agentic Design Overview
 ---
 

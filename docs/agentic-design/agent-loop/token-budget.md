@@ -2,7 +2,7 @@
 title: Token Budget 与 Compaction
 layout: default
 nav_order: 2
-parent: Agent Loop
+parent: 核心 Query Loop
 grand_parent: Agentic Design Overview
 ---
 

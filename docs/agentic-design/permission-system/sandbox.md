@@ -2,7 +2,7 @@
 title: 路径安全与沙箱隔离
 layout: default
 nav_order: 3
-parent: Permission System
+parent: Permission 系统
 grand_parent: Agentic Design Overview
 ---
 

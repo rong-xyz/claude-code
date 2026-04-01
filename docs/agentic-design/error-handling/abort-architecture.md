@@ -2,7 +2,7 @@
 title: Abort Architecture
 layout: default
 nav_order: 1
-parent: Error Handling
+parent: 错误处理
 grand_parent: Agentic Design Overview
 ---
 

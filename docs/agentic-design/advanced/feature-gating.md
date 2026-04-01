@@ -2,7 +2,7 @@
 title: Feature Gating
 layout: default
 nav_order: 1
-parent: Advanced Topics
+parent: 高级主题
 grand_parent: Agentic Design Overview
 ---
 

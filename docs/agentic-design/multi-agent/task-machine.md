@@ -2,7 +2,7 @@
 title: 任务状态机与 ID 格式
 layout: default
 nav_order: 4
-parent: Multi-Agent Coordination
+parent: 多 Agent 协调
 grand_parent: Agentic Design Overview
 ---
 

@@ -2,7 +2,7 @@
 title: Multi-Client Architecture
 layout: default
 nav_order: 2
-parent: Bridge & Remote
+parent: Bridge parent: Bridge & Remote Remote
 grand_parent: Agentic Design Overview
 ---
 

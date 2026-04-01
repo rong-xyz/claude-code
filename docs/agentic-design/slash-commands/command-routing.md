@@ -2,7 +2,7 @@
 title: Command Routing
 layout: default
 nav_order: 1
-parent: Slash Commands
+parent: 斜杠命令
 grand_parent: Agentic Design Overview
 ---
 

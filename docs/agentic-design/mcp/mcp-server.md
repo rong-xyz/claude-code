@@ -2,7 +2,7 @@
 title: Claude Code 作为 MCP Server
 layout: default
 nav_order: 1
-parent: MCP Integration
+parent: MCP 集成
 grand_parent: Agentic Design Overview
 ---
 

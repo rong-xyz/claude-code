@@ -2,7 +2,7 @@
 title: 端到端数据流
 layout: default
 nav_order: 4
-parent: Codebase Tour
+parent: 代码库全景
 grand_parent: Agentic Design Overview
 ---
 
