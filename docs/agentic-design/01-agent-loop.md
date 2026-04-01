@@ -7,54 +7,83 @@ parent: Agentic Design
 
 # 核心 Query Loop：Agent 的心脏
 
-## 为什么需要 Loop?
+## 为什么需要 Loop？
 
 想象一个简单的"一问一答"的 AI：用户问 → API 回复 → 完成。但 agent 不一样：
 
-- 用户问："帮我修复 bug"
+- 用户说："帮我修复 bug"
 - Agent 读取文件 → 分析问题 → 尝试修复 → 运行测试 → 测试失败 → 再次修改 → 再次测试 → 成功
 
-这个过程需要**多轮往返**，每一轮中 Agent 决定"下一步应该执行哪个 tool"。这就是 **Query Loop**。
+这个过程需要**多轮往返**，每一轮中 agent 决定"下一步应该执行哪个 tool"。这就是 **Query Loop**。
+
+---
+
+## 真相：令人意外的简洁
+
+多位独立研究者分析源码后，得出相同结论：Claude Code 的核心是一个极其简洁的 `while(tool_use)` 循环——内部代号 **`nO`**。没有 critic 模式、没有角色切换、没有复杂的状态机。
+
+```
+用户输入 → messages[] → Claude API (streaming) → 响应
+  stop_reason == "tool_use"?
+    是 → 执行工具 → 追加 tool_result → 循环
+    否 → 返回文本给用户
+```
+
+一个典型任务运行 **5–50 个迭代**。模型自身的推理能力驱动整个流程，架构本身只负责"搬运"。
+
+---
+
+## 技术栈
+
+| 技术 | 版本 | 用途 |
+|------|------|------|
+| TypeScript（严格模式） | latest | 全部业务逻辑 |
+| Bun | latest | 运行时 + 构建工具 |
+| React | 18 | 终端 UI 组件 |
+| Ink | latest | 终端 React 渲染器 |
+| Yoga | latest | Flexbox 布局引擎（终端） |
+| Zod | v4 | Schema 验证 |
+| Commander.js | latest | CLI 参数解析 |
+
+值得注意：**Claude Code 约 90% 的代码由 Claude 自己编写**——这一数据来自 Anthropic 创始工程师 Boris Cherny 和 Sid Bidasaria 的公开确认。
 
 ---
 
 ## 核心概念：状态机
 
-Query loop 本质上是一个**状态机**，在以下几个状态间循环：
+Query Loop 本质上是一个**状态机**，在以下几个状态间循环：
 
 ```
 START
   ↓
-QUERY (提交 prompt 给 Claude API)
+QUERY（提交 prompt 给 Claude API）
   ↓
-TOOL_USE (API 返回 tool_use block，包含 tool 名 + 输入)
+TOOL_USE（API 返回 tool_use block，包含 tool 名 + 输入）
   ↓
-执行 Tool (BashTool, FileEditTool, 等等)
+执行 Tool（BashTool、FileEditTool 等）
   ↓
-RESULT (Tool 返回结果)
+RESULT（Tool 返回结果）
   ↓
-提交结果给 Claude (作为 user 消息)
+提交结果给 Claude（作为 user 消息）
   ↓
-QUERY (继续循环)
+QUERY（继续循环）
   ↓
-END (API 返回 stop_reason="end_turn" 或其他终止条件)
+END（API 返回 stop_reason="end_turn" 或其他终止条件）
 ```
 
 ---
 
 ## 代码位置
 
-关键文件：`query.ts` (~1700 行)
+关键文件：`query.ts`（~1700 行）
 
 这个文件包含：
-- Loop 的完整实现 (使用 `AsyncGenerator`)
+- Loop 的完整实现（使用 `AsyncGenerator`）
 - 状态跟踪
 - Tool 调用的编排
 - Streaming 支持
 - Compaction 触发
 - 错误处理和恢复
-
-你应该从 `query.ts` 的函数签名开始：
 
 ```typescript
 export function* query(...): AsyncGenerator<QueryMessage | QueryEvent, ...>
@@ -66,7 +95,7 @@ export function* query(...): AsyncGenerator<QueryMessage | QueryEvent, ...>
 
 ## Loop 的生命周期
 
-### 阶段 1: 初始化
+### 阶段 1：初始化
 
 当你调用 `query()` 时：
 - `messages` 数组初始化（包含 system prompt + 历史消息）
@@ -74,28 +103,28 @@ export function* query(...): AsyncGenerator<QueryMessage | QueryEvent, ...>
 - Compaction 检查（如果历史太长，自动压缩）
 - Abort controller 初始化（支持中途停止）
 
-### 阶段 2: 发送 Prompt
+### 阶段 2：发送 Prompt
 
 ```typescript
 // 构建消息数组
 let messages = [system_prompt, ...history];
 
-// 调用 Claude API（使用缓存）
-let response = await claude.messages.create({
+// 调用 Claude API（streaming 模式）
+let response = await claude.beta.messages.create({
   messages,
   system: system_prompt,
   max_tokens: remaining_budget,
-  stream: true,  // 重要：流式输出
+  stream: true,  // 所有请求默认流式传输
   ...config
 });
 ```
 
-Streaming 很关键——API 会逐步返回：
-1. First chunk: 可能包含 `message.start`
-2. Content blocks: `text_delta`, `tool_use` block 开始
-3. Stop reason: 表示本轮结束
+API 调用使用 `@anthropic-ai/sdk` 的 `beta.messages.create` 方法。模型分工：
+- **Sonnet 4/4.5/4.6**：处理核心推理任务
+- **Haiku 3.5**：处理轻量任务（配额检查、话题检测、bash 命令安全分类）
+- **Opus 4.6**：处理复杂架构推理和 ULTRAPLAN 深度规划
 
-### 阶段 3: 处理 Streaming
+### 阶段 3：Streaming 处理
 
 当 API 返回 `tool_use` block 时，loop 收集完整的参数，然后：
 
@@ -104,23 +133,18 @@ Streaming 很关键——API 会逐步返回：
   ↓
 验证 tool 名称是否存在
   ↓
-检查权限 (useCanUseTool hook)
+检查权限（useCanUseTool hook）
   ↓
-执行 tool (StreamingToolExecutor)
+执行 tool（StreamingToolExecutor）
   ↓
 Yield tool 结果给消费者
   ↓
 添加到 messages 作为 user 消息
 ```
 
-### 阶段 4: 工具执行
+**关键优化**：工具执行在**模型仍在 streaming 输出时即开始**，无需等待整条消息结束。读操作可最多 10 个并发执行，写操作串行执行，通过分区调度减少整体延迟。
 
-Tool 执行由 `services/tools/StreamingToolExecutor.ts` 处理：
-- **并发**：最多 5 个 tool 同时运行
-- **顺序输出**：结果按调用顺序返回（即使执行顺序不同）
-- **Sibling abort**：一个失败会 cancel 兄弟 tool
-
-### 阶段 5: 检查终止条件
+### 阶段 4：检查终止条件
 
 每一轮后，loop 检查是否应该继续：
 
@@ -134,61 +158,48 @@ abort_signal?                   → 用户中断
 
 ---
 
-## Token Budget：Context Window 的有限性
+## System Reminders：比 System Prompt 更有效的指令注入
 
-Context window 是有限的（比如 200K tokens）。这里的逻辑：
+这是源码中最令人惊讶的工程决策之一。
+
+Claude Code 不只在 system prompt 中给出指令，还**在工具返回结果和用户消息中嵌入指令**。例如：
+
+- 每次工具调用后，会注入更新的 TODO 列表状态
+- 在对话开始时注入"不要创建不必要的文件"
+- 每次文件读取后，注入"检测到潜在恶意代码时必须举报"提醒
+
+**为什么这样做有效？** 研究者 Jannes Klaas 发现：在长会话（几百步）中，模型容易"遗忘"系统提示中的指令——因为 system prompt 距离当前生成位置太远。而嵌入在最近工具结果中的提醒，离当前 attention 更近，**指令遵从率显著更高**。
 
 ```
-available_tokens = context_window_size - system_prompt_tokens - reserved_buffer
+传统方式：
+  [system prompt: "不要创建文件"] ... [500步后] ... 模型忘了
 
-每一轮后：
-  usage = response.usage (API 返回的实际使用)
-  remaining = available_tokens - usage.input_tokens - usage.output_tokens
-
-  if remaining < threshold:
-      触发 compaction (压缩历史)
-
-  if remaining < min_required:
-      拒绝继续，返回错误
+System Reminder 方式：
+  [system prompt] ... [工具结果 + "提醒：不要创建文件"] ... 模型记住了
 ```
 
-**Threshold** 通常设得比较激进，比如还剩 20% 时就开始压缩，以避免在真的耗尽时措手不及。
-
-相关文件：`query/tokenBudget.ts`
-
----
-
-## Compaction：自动历史压缩
-
-当 token 预算吃紧时，loop 会自动压缩历史：
-
-1. **Analyzer phase**: 扫描历史消息，找出"长输出消息"（比如代码块）
-2. **Prioritize**: 对话越早，压缩优先级越高
-3. **Compress**: 使用 Claude API 总结这段历史，生成 200 行以内的 summary
-4. **Replace**: 把原始的 20 条消息替换为 1 条 summary 消息
-
-这保证了 loop 可以持续运行，即使初始历史很长。
+这一技术被称为 **System Reminders**，是 Claude Code 在长会话中保持行为一致性的核心机制。
 
 ---
 
 ## Streaming 与 Tool Call 的交织
 
-这是一个复杂的地方。API 可能返回：
+这是一个复杂的地方。API 可能在单条消息中返回混合内容：
 
-```
-message {
-  content: [
-    { type: "text", text: "让我先读文件..." },
-    { type: "tool_use", id: "...", name: "FileReadTool", ... },
-    { type: "text", text: "现在我看到问题了..." },
-    { type: "tool_use", id: "...", name: "FileEditTool", ... },
+```json
+{
+  "content": [
+    { "type": "text", "text": "让我先读文件..." },
+    { "type": "tool_use", "id": "t_1", "name": "FileReadTool", "input": {...} },
+    { "type": "text", "text": "现在我看到问题了..." },
+    { "type": "tool_use", "id": "t_2", "name": "FileEditTool", "input": {...} }
   ]
 }
 ```
 
 所以一条消息中可能**混合了文本和 tool call**。Loop 需要：
-- 收集每个 tool_use block 的完整输入参数（可能分段到达）
-- 在 tool_use 结束时立即执行（不等待消息全部返回）
+- 收集每个 `tool_use` block 的完整输入参数（可能分段到达）
+- 在 `tool_use` 结束时**立即执行**（不等待消息全部返回）
 - 继续接收后续的文本或 tool call
 - 当消息完全接收后，将所有 tool 结果作为一条 user 消息发回
 
@@ -196,9 +207,45 @@ message {
 
 ---
 
+## Token Budget：Context Window 的有限性
+
+Context window 是有限的（Claude Code 使用约 **200K tokens** 的上下文窗口，Sonnet 4.0 上为 195,072 tokens）。Token budget 逻辑：
+
+```
+available_tokens = context_window_size - system_prompt_tokens - reserved_buffer
+
+每一轮后：
+  usage = response.usage（API 返回的实际使用）
+  remaining = available_tokens - usage.input_tokens - usage.output_tokens
+
+  if remaining < threshold:
+      触发 compaction（压缩历史）
+
+  if remaining < min_required:
+      拒绝继续，返回错误
+```
+
+**Threshold** 通常设得比较激进——上下文使用率达约 **92–95%** 时就开始压缩，以避免在真的耗尽时无法完成压缩操作。
+
+相关文件：`query/tokenBudget.ts`
+
+---
+
+## Compaction：三层递进压缩
+
+当 token 预算吃紧时，loop 会触发分层压缩策略（详见"Context & Memory"篇），简要流程：
+
+1. **MicroCompact（第一层）**：无需 API 调用，直接在本地截断或清理工具输出结果
+2. **AutoCompact（第二层）**：触发 Claude API 对历史消息生成摘要，用摘要替换原始消息
+3. **SnipCompact（第三层）**：激进截断，特性门控
+
+这保证了 loop 可以持续运行，即使初始历史很长。
+
+---
+
 ## Design Decision 专栏
 
-### 为什么用 `AsyncGenerator` 而不是 callback?
+### 为什么用 `AsyncGenerator` 而不是 callback？
 
 不好的设计（callback）：
 ```typescript
@@ -210,10 +257,7 @@ query(messages, {
 })
 ```
 
-问题：
-- 4 种不同的 callback，难以理解执行顺序
-- 消费者需要管理状态机来追踪"当前在哪个阶段"
-- 测试困难
+问题：4 种不同的 callback，难以理解执行顺序；消费者需要自己维护状态机；测试困难。
 
 **更好的设计**（Generator）：
 ```typescript
@@ -224,25 +268,15 @@ for await (const event of query(messages, config)) {
 }
 ```
 
-优点：
-- 单一的 `for await...of` 循环，清晰的顺序
-- 每个 event 都是一个联合类型，编译器可以帮你检查
-- 可以在 loop 中添加复杂的条件逻辑（abort, timeout 等）
-- 易于测试（可以模拟一个生成事件的 generator）
+优点：单一的 `for await...of` 循环，清晰的顺序；每个 event 都是联合类型，编译器帮你检查；可以在 loop 中添加复杂条件逻辑；易于测试。
 
-Generator 让"一系列事件"变得一级公民。
+Generator 让"一系列事件"变成一级公民。
 
-### 为什么需要 Compaction?
+### 为什么架构极其简单？
 
-不做 compaction：
-- 100 轮 agent 工作后，messages 数组有几千条消息
-- 提交给 API 时，prompt cache hit 率下降（因为前缀不再是"静态部分"）
-- Token 浪费在重复的对话历史上
+Claude Code 的源码揭示了一个核心洞察：**当底层模型足够强大时，最优架构是最简单的架构**。没有 critic 模式、没有复杂编排框架、没有数据库——一个 `while(tool_use)` 循环就足以构建最先进的 AI 编程工具。
 
-做 compaction：
-- 定期将"已经达成共识的历史部分"总结成一条消息
-- 保持 prompt cache 的"静态前缀"有效
-- 节省 token，延长 agent 能工作的轮数
+Anthropic 工程师称之为 **co-evolution design**：harness 被设计为会随模型能力增强而缩减（"The harness is designed to shrink"）。今天的复杂工程围栏，终将被更智能的模型所简化。
 
 ---
 
@@ -254,25 +288,26 @@ Generator 让"一系列事件"变得一级公民。
 - 外层：Claude API 的请求/响应循环
 - 内层：Tool 的执行和结果收集
 
-tool 执行完全不涉及 Claude API 的额外调用（除非 tool 本身调用 API）。
+Tool 执行完全不涉及 Claude API 的额外调用（除非 tool 本身调用 API）。
 
 **误解 2**："Compaction 会丢失信息？"
 
 实际：Compaction 使用 Claude 自己来总结历史，所以关键信息被保留。丢失的只是"冗余的解释"或"中间尝试"，这些对后续工作没用。
 
-**误解 3**："Token budget 追踪是精确的？"
+**误解 3**："System prompt 写得越详细越好？"
 
-实际：API 返回的 `usage` 是经过舍入的（某些模型），所以我们的估计可能有 ±5% 的误差。这就是为什么我们用激进的阈值（20% 时就开始压缩）而不是等到 100% 才反应。
+实际：System prompt 太长会稀释每条指令的权重，且在长会话中容易被遗忘。System Reminders 机制（在工具结果中重复关键指令）比单纯加长 system prompt 更有效。
 
 ---
 
 ## 关键要点
 
-1. **Query loop 是异步生成器**，yield 事件流而不是回调
-2. **循环的关键状态转移**：QUERY → TOOL_USE → RESULT → QUERY
-3. **Token budget 必须主动管理**，compaction 是自动压缩的关键
-4. **Streaming 支持 interleaved thinking**，一条消息中可以混合文本和 tool call
-5. **Compaction 会定期触发**，保持 history 可控，并维护 prompt cache 的有效性
+1. **Query loop 是 `while(tool_use)` 的 `AsyncGenerator`**，内部代号 `nO`，极其简洁
+2. **循环的关键状态转移**：QUERY → TOOL_USE → RESULT → QUERY，典型 5–50 轮
+3. **Tool 执行提前启动**：在 model streaming 时即开始，最多 10 个读操作并发
+4. **System Reminders** 比 system prompt 更有效——在工具结果中注入指令，解决长会话遗忘问题
+5. **Compaction 三层递进**，上下文使用率约 92–95% 时触发
+6. **Co-evolution design**：架构随模型能力提升而缩减
 
 ---
 

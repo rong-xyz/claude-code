@@ -101,15 +101,41 @@ Agent 之间通过 `<task-notification>` XML 消息通信，memory 以 Markdown 
 
 ## 建议阅读顺序
 
-| 编号 | 文档 | 用时 | 核心问题 |
-|------|------|------|---------|
-| [00](./00-codebase-tour.md) | 代码库目录全景 | 30 min | "这个 repo 里有什么？" |
-| [01](./01-agent-loop.md) | 核心 Query Loop | 20 min | "Agent 是如何循环运作的？" |
-| [02](./02-tool-system.md) | Tool 系统 | 20 min | "Tool 是怎么被定义和执行的？" |
-| [03](./03-multi-agent-coordination.md) | 多 Agent 协调 | 25 min | "多个 agent 怎么协作？" |
-| [04](./04-permission-system.md) | Permission 系统 | 20 min | "Agent 怎么知道自己能做什么？" |
-| [05](./05-context-and-memory.md) | Context 与 Memory | 20 min | "Context window 满了怎么办？" |
-| [06](./06-feature-gating.md) | Feature Flag 系统 | 10 min | "内部功能是怎么隐藏的？" |
+| 编号 | 文档 | 用时 | 核心问题 | 新增内容 |
+|------|------|------|---------|---------|
+| [00](./00-codebase-tour.md) | 代码库目录全景 | 30 min | "这个 repo 里有什么？" | 完整文件系统导航 |
+| [01](./01-agent-loop.md) | 核心 Query Loop | 25 min | "Agent 是如何循环运作的？" | System Reminders、三层压缩、Co-evolution 设计 |
+| [02](./02-tool-system.md) | Tool 系统 | 25 min | "Tool 是怎么被定义和执行的？" | 延迟工具发现、Prompt cache 优化、流式并发执行 |
+| [03](./03-multi-agent-coordination.md) | 多 Agent 协调 | 30 min | "多个 agent 怎么协作？" | 四种 agent 类型、Coordinator 4 阶段、XML 协议 |
+| [04](./04-permission-system.md) | Permission 系统 | 25 min | "Agent 怎么知道自己能做什么？" | 五层防线、YOLO 分类器、路径安全 |
+| [05](./05-context-and-memory.md) | Context 与 Memory | 30 min | "Context window 满了怎么办？" | Cache-aware 分层、三层压缩、autoDream 巩固 |
+| [06](./06-feature-gating.md) | Feature Flag 系统 | 15 min | "内部功能是怎么隐藏的？" | 编译期/运行期双层隔离、KAIROS/ULTRAPLAN/BUDDY |
+
+**预计总用时**：2.5–3 小时全读，1 小时快速扫描
+
+---
+
+## 本次更新（2026 年 4 月）
+
+基于 2026 年 3 月源码泄露（Kuberwastaken deepwiki 分析 + compass.md 深度研究）对所有文档的重大扩充：
+
+### 新增关键洞察
+
+- **System Reminders**（比 system prompt 更有效）：嵌入在工具结果中的指令，在长会话中的遵从率显著更高
+- **Prompt Cache 优化**：字母排序的工具列表、静态/动态 system prompt 分割，单个 session 可节省 50% API 成本
+- **三层压缩策略**：MicroCompact（本地）→ AutoCompact（API）→ SnipCompact（激进修剪）
+- **autoDream 自动化**：每 24 小时后台巩固 MEMORY.md，用户无感，长期知识不丢失
+- **五层权限防线**：Mode → Rules → Risk Classification → YOLO Classifier → User Prompt
+- **Coordinator 4 阶段**：Research → Synthesis → Implementation → Verification，用 XML 协议通信
+- **四种 Agent 类型**：local（进程内） / remote（CCR 云容器，最多 30min） / forked（子进程） / teammate（同进程伴侣）
+
+### 数据与事实
+
+- **实际代码统计**：QueryEngine ~46K 行、Tool.ts ~29K 行、commands.ts ~25K 行、权限系统 300+ KB、AgentTool ~233 KB
+- **工具数量**：40+ 权限门控工具，其中 ~18 个延迟发现
+- **系统提示词规模**：~8000–12000 tokens（基础 ~2900 + 工具定义 ~3000 + 补充内容）
+- **内部代号**：Tengu（主项目）、Capybara（Claude 4.6）、KAIROS（永驻助手）、ULTRAPLAN（深度规划 30min）、BUDDY（电子宠物）
+- **未发布功能**：44 个功能标志，包括 VOICE_MODE、BRIDGE_MODE、CHICAGO（计算机使用）等
 
 ---
 
@@ -117,5 +143,6 @@ Agent 之间通过 `<task-notification>` XML 消息通信，memory 以 Markdown 
 
 - **按顺序读**：00 → 01 → 02 → 03 → 04 → 05 → 06，每篇都假设你已读过前面的内容
 - **跳读**：如果你已熟悉某个概念，可以直接跳到感兴趣的章节
-- **对照代码**：每篇文档都标注了关键源文件路径，随时可以打开对照阅读
+- **对照代码**：每篇文档都标注了关键源文件路径和代码行数，随时可以打开源代码对照阅读
 - **关注 Design Decision 专栏**：这些是最有学习价值的地方，解释了"为什么这样设计"而不只是"是什么"
+- **阅读表格和代码示例**：大量表格总结、流程图和代码片段帮助理解复杂概念
