@@ -2,7 +2,7 @@
 title: Agentic Design Overview
 layout: default
 nav_order: 1
-parent: Agentic Design
+parent: Claude Code Documentation
 has_children: true
 ---
 
